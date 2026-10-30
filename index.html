@@ -46,7 +46,7 @@
   let steps;
   if(/bedroom|room|tidy|clean/.test(t)){
    const area=/desk/.test(d)?'desk':/clothes|laundry/.test(d)?'clothes':/floor/.test(d)?'floor':/bed/.test(d)?'bed':/rubbish|trash/.test(d)?'rubbish':null;
-   steps=area?[`Choose one small part of the ${area} area`,`Put away or move 3 ${area==='clothes'?'items of clothing':'things'}`,'Pause and decide whether to do one more small part']:['Choose one small area, such as the bed, floor, or desk','Pick up the rubbish from that area','Put a few clothes in the laundry or away','Return 3 things to where they belong','Pause and decide what would help next'];
+   steps=area==='desk'?['Choose one small part of the desk','Pick up one item on the desk and put it where it belongs','Pause and decide whether to put away one more item']:area==='clothes'?['Choose one small group of clothes','Put one item in the laundry or away','Pause and decide whether to put away one more item']:area?['Choose one small part of the '+area+' area','Pick up one item and put it where it belongs','Pause and decide whether to do one more small part']:['Choose one small area, such as the bed, floor, or desk','Pick up the rubbish from that area','Put a few clothes in the laundry or away','Return 3 things to where they belong','Pause and decide what would help next'];
   }else if(/homework|study|revision|essay|assignment|project/.test(t)){
    steps=['Gather the assignment and one thing you need','Open it and read just the instructions or first question','Write down the very next action in a few words','Work on that one small part for 5 minutes','Pause and choose whether to continue or stop'];
   }else if(/email|message|reply|write/.test(t)){
@@ -136,7 +136,7 @@
    const index=smallMatch?Number(smallMatch[1])-1:0;
    if(index>=0&&index<state.steps.length){
     const original=state.steps[index].text;
-    let tiny=/choose|pick|select/i.test(original)?'Look at the options and point to one small starting point':/gather|collect/i.test(original)?'Find one item and put it within reach':/open|find/i.test(original)?'Find and open: '+original.replace(/^(open|find)\s+/i,''):/5 minutes/i.test(original)?'Set a 5-minute timer and try only the first part':`Spend one minute on the first part of: ${original}`;
+    let tiny=/choose|pick|select/i.test(original)?'Look at the options and point to one small starting point':/put away|move \d+ things|return \d+ things/i.test(original)?'Pick up one thing and put it where it belongs':/gather|collect/i.test(original)?'Find one item and put it within reach':/open|find/i.test(original)?'Find and open: '+original.replace(/^(open|find)\s+/i,''):/5 minutes/i.test(original)?'Set a 5-minute timer and try only the first part':`Spend one minute on the first part of: ${original}`;
     state.steps[index].text=tiny;save();render();add(`I made step ${index+1} smaller: “${tiny}.” I kept the rest of your plan. Is this a better starting point?`,'bot',['That feels easier','Make it even smaller','Change another step']);
    }else add('There are no steps to refine yet. Tell me what you want to do and we’ll build a plan together.','bot');
    return;
